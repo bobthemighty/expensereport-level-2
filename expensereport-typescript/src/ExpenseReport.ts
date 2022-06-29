@@ -1,11 +1,3 @@
-const message = 'Hello, World!\n';
-
-const sumTwoValues = (a: number, b: number): number => a + b
-
-const printHelloWorld = (): void => {
-  process.stdout.write(message);
-}
-
 type ExpenseType = "dinner" | "breakfast" | "car-rental"
 
 class Expense {
@@ -18,8 +10,8 @@ class Expense {
 }
 
 function printReport(htmlMode: boolean, expenses: Expense[]) {
-  let totalExpenses: number = 0
-  let mealExpenses: number = 0
+  let totalExpenses = 0
+  let mealExpenses = 0
 
   if (htmlMode) {
     process.stdout.write("<!DOCTYPE html>\n");
@@ -58,7 +50,7 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
         break
     }
 
-    let mealOverExpensesMarker = expense.type == "dinner" && expense.amount > 5000 || expense.type == "breakfast" && expense.amount > 1000 ? "X" : " "
+    const mealOverExpensesMarker = expense.type == "dinner" && expense.amount > 5000 || expense.type == "breakfast" && expense.amount > 1000 ? "X" : " "
 
     if (htmlMode) {
         process.stdout.write("<tr><td>" + expenseName + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
