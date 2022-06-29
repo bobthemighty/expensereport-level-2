@@ -79,4 +79,4 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
   }
 }
 
-export {sumTwoValues, printHelloWorld, printReport, Expense, ExpenseType}
+export {printReport, Expense, ExpenseType}
