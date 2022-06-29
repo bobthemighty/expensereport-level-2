@@ -57,7 +57,13 @@ function printReport(htmlMode: boolean, _expenses: Expense[]) {
   const expenses = new Expenses(_expenses);
   const writer = new PlaintextWriter();
 
-  if (htmlMode) {
+  if(!htmlMode){
+    writer.writeHeader()
+    writer.writeItems(expenses)
+    writer.writeTotal(expenses)
+    return
+  }
+
     process.stdout.write("<!DOCTYPE html>\n");
     process.stdout.write("<html>\n");
     process.stdout.write("<head>\n");
@@ -65,43 +71,26 @@ function printReport(htmlMode: boolean, _expenses: Expense[]) {
     process.stdout.write("</head>\n");
     process.stdout.write("<body>\n");
     process.stdout.write("<h1>Expense Report: " + new Date().toISOString().substr(0, 10) + "</h1>\n")
-  } else {
-    writer.writeHeader()
-  }
 
-  if (htmlMode) {
     process.stdout.write("<table>\n");
     process.stdout.write("<thead>\n");
     process.stdout.write("<tr><th scope=\"col\">Type</th><th scope=\"col\">Amount</th><th scope=\"col\">Over Limit</th></tr>\n");
     process.stdout.write("</thead>\n");
     process.stdout.write("<tbody>\n");
-  }
 
 
-  if (htmlMode) {
     for (const expense of expenses) {
       const mealOverExpensesMarker = expense.isOverLimits ? "X" : " "
       process.stdout.write("<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
     }
-  } else {
-        writer.writeItems(expenses)
-  }
-  if (htmlMode) {
     process.stdout.write("</tbody>\n");
     process.stdout.write("</table>\n");
-  }
 
-  if (htmlMode) {
     process.stdout.write("<p>Meal Expenses: " + expenses.mealExpenses + "</p>\n")
     process.stdout.write("<p>Total Expenses: " + expenses.totalExpenses + "</p>\n")
-  } else {
-    writer.writeTotal(expenses)
-  }
 
-  if (htmlMode) {
     process.stdout.write("</body>\n");
     process.stdout.write("</html>\n");
-  }
 }
 
 export {printReport, Expense, ExpenseType}
