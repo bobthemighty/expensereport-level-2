@@ -1,11 +1,18 @@
 type ExpenseType = "dinner" | "breakfast" | "car-rental"
 
 class Expense {
-  type: ExpenseType
-  amount: number
-  constructor(type: ExpenseType, amount: number) {
-    this.type = type
-    this.amount = amount
+  constructor(public type: ExpenseType, public amount: number) {
+  }
+
+  get name() : string {
+    switch(this.type) {
+      case "dinner":
+        return "Dinner"
+      case "breakfast":
+        return "Breakfast"
+      case "car-rental":
+        return "Car Rental"
+    }
   }
 }
 
@@ -37,25 +44,13 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
       mealExpenses += expense.amount
     }
 
-    let expenseName = ""
-    switch (expense.type) {
-      case "dinner":
-        expenseName = "Dinner"
-        break
-      case "breakfast":
-        expenseName = "Breakfast"
-        break
-      case "car-rental":
-        expenseName = "Car Rental"
-        break
-    }
 
     const mealOverExpensesMarker = expense.type == "dinner" && expense.amount > 5000 || expense.type == "breakfast" && expense.amount > 1000 ? "X" : " "
 
     if (htmlMode) {
-        process.stdout.write("<tr><td>" + expenseName + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
+        process.stdout.write("<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
     } else {
-        process.stdout.write(expenseName + "\t" + expense.amount + "\t" + mealOverExpensesMarker + "\n")
+        process.stdout.write(expense.name + "\t" + expense.amount + "\t" + mealOverExpensesMarker + "\n")
     }
 
     totalExpenses += expense.amount
