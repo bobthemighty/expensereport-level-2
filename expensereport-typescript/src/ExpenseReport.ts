@@ -14,6 +14,10 @@ class Expense {
         return "Car Rental"
     }
   }
+
+  get isOverLimits() : boolean {
+    return this.type == "dinner" && this.amount > 5000 || this.type == "breakfast" && this.amount > 1000 ? true: false
+  }
 }
 
 function printReport(htmlMode: boolean, expenses: Expense[]) {
@@ -45,7 +49,7 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
     }
 
 
-    const mealOverExpensesMarker = expense.type == "dinner" && expense.amount > 5000 || expense.type == "breakfast" && expense.amount > 1000 ? "X" : " "
+    const mealOverExpensesMarker = expense.isOverLimits ? "X" : " "
 
     if (htmlMode) {
         process.stdout.write("<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
