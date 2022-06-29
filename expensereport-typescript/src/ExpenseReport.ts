@@ -36,8 +36,26 @@ class Expenses implements Iterable<Expense> {
   }
 }
 
+class PlaintextWriter {
+  writeHeader() {
+    process.stdout.write("Expense Report: " + new Date().toISOString().substr(0, 10) + "\n")
+  }
+
+  writeItems(expenses: Iterable<Expense>) {
+    for (const expense of expenses) {
+      process.stdout.write(expense.name + "\t" + expense.amount + "\t" + (expense.isOverLimits? "X": " ") + "\n")
+    }
+  }
+
+  writeTotal(expenses: Expenses) {
+    process.stdout.write("Meal Expenses: " + expenses.mealExpenses + "\n")
+    process.stdout.write("Total Expenses: " + expenses.totalExpenses + "\n")
+  }
+}
+
 function printReport(htmlMode: boolean, _expenses: Expense[]) {
   const expenses = new Expenses(_expenses);
+  const writer = new PlaintextWriter();
 
   if (htmlMode) {
     process.stdout.write("<!DOCTYPE html>\n");
@@ -48,7 +66,7 @@ function printReport(htmlMode: boolean, _expenses: Expense[]) {
     process.stdout.write("<body>\n");
     process.stdout.write("<h1>Expense Report: " + new Date().toISOString().substr(0, 10) + "</h1>\n")
   } else {
-    process.stdout.write("Expense Report: " + new Date().toISOString().substr(0, 10) + "\n")
+    writer.writeHeader()
   }
 
   if (htmlMode) {
@@ -58,15 +76,15 @@ function printReport(htmlMode: boolean, _expenses: Expense[]) {
     process.stdout.write("</thead>\n");
     process.stdout.write("<tbody>\n");
   }
-  for (const expense of expenses) {
 
-    const mealOverExpensesMarker = expense.isOverLimits ? "X" : " "
 
-    if (htmlMode) {
-        process.stdout.write("<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
-    } else {
-        process.stdout.write(expense.name + "\t" + expense.amount + "\t" + mealOverExpensesMarker + "\n")
+  if (htmlMode) {
+    for (const expense of expenses) {
+      const mealOverExpensesMarker = expense.isOverLimits ? "X" : " "
+      process.stdout.write("<tr><td>" + expense.name + "</td><td>" + expense.amount + "</td><td>" + mealOverExpensesMarker + "</td></tr>\n")
     }
+  } else {
+        writer.writeItems(expenses)
   }
   if (htmlMode) {
     process.stdout.write("</tbody>\n");
@@ -77,8 +95,7 @@ function printReport(htmlMode: boolean, _expenses: Expense[]) {
     process.stdout.write("<p>Meal Expenses: " + expenses.mealExpenses + "</p>\n")
     process.stdout.write("<p>Total Expenses: " + expenses.totalExpenses + "</p>\n")
   } else {
-    process.stdout.write("Meal Expenses: " + expenses.mealExpenses + "\n")
-    process.stdout.write("Total Expenses: " + expenses.totalExpenses + "\n")
+    writer.writeTotal(expenses)
   }
 
   if (htmlMode) {
