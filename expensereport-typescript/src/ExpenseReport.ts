@@ -20,9 +20,24 @@ class Expense {
   }
 }
 
-function printReport(htmlMode: boolean, expenses: Expense[]) {
-  let totalExpenses = 0
-  let mealExpenses = 0
+class Expenses implements Iterable<Expense> {
+  constructor (private items: Array<Expense>){}
+
+  [Symbol.iterator]() : Iterator<Expense> {
+    return this.items[Symbol.iterator]();
+  }
+
+  get mealExpenses() {
+    return this.items.filter(x => x.type !== "car-rental").reduce((acc, x) => acc + x.amount, 0)
+  }
+
+  get totalExpenses() {
+    return this.items.reduce((acc, x) => acc + x.amount, 0)
+  }
+}
+
+function printReport(htmlMode: boolean, _expenses: Expense[]) {
+  const expenses = new Expenses(_expenses);
 
   if (htmlMode) {
     process.stdout.write("<!DOCTYPE html>\n");
@@ -44,10 +59,6 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
     process.stdout.write("<tbody>\n");
   }
   for (const expense of expenses) {
-    if (expense.type == "dinner" || expense.type == "breakfast") {
-      mealExpenses += expense.amount
-    }
-
 
     const mealOverExpensesMarker = expense.isOverLimits ? "X" : " "
 
@@ -56,8 +67,6 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
     } else {
         process.stdout.write(expense.name + "\t" + expense.amount + "\t" + mealOverExpensesMarker + "\n")
     }
-
-    totalExpenses += expense.amount
   }
   if (htmlMode) {
     process.stdout.write("</tbody>\n");
@@ -65,11 +74,11 @@ function printReport(htmlMode: boolean, expenses: Expense[]) {
   }
 
   if (htmlMode) {
-    process.stdout.write("<p>Meal Expenses: " + mealExpenses + "</p>\n")
-    process.stdout.write("<p>Total Expenses: " + totalExpenses + "</p>\n")
+    process.stdout.write("<p>Meal Expenses: " + expenses.mealExpenses + "</p>\n")
+    process.stdout.write("<p>Total Expenses: " + expenses.totalExpenses + "</p>\n")
   } else {
-    process.stdout.write("Meal Expenses: " + mealExpenses + "\n")
-    process.stdout.write("Total Expenses: " + totalExpenses + "\n")
+    process.stdout.write("Meal Expenses: " + expenses.mealExpenses + "\n")
+    process.stdout.write("Total Expenses: " + expenses.totalExpenses + "\n")
   }
 
   if (htmlMode) {
