@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExpenseReport should keep its original behavior 1`] = `
+"<!DOCTYPE html>
+<html>
+<head>
+<title>Expense Report: 2022-06-29</title>
+</head>
+<body>
+<h1>Expense Report: 2022-06-29</h1>
+<table>
+<thead>
+<tr><th scope=\\"col\\">Type</th><th scope=\\"col\\">Amount</th><th scope=\\"col\\">Over Limit</th></tr>
+</thead>
+<tbody>
+<tr><td>Breakfast</td><td>1000</td><td> </td></tr>
+<tr><td>Breakfast</td><td>1001</td><td>X</td></tr>
+<tr><td>Dinner</td><td>5000</td><td> </td></tr>
+<tr><td>Dinner</td><td>5001</td><td>X</td></tr>
+<tr><td>Car Rental</td><td>4</td><td> </td></tr>
+</tbody>
+</table>
+<p>Meal Expenses: 12002</p>
+<p>Total Expenses: 12006</p>
+</body>
+</html>
+"
+`;
