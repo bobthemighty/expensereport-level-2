@@ -1,4 +1,4 @@
-import { printReport, Expense, ExpenseType } from './ExpenseReport'
+import { printReport, Expense } from './ExpenseReport'
 
 describe(`ExpenseReport`, () => {
     it(`should keep its original behavior`, () => {

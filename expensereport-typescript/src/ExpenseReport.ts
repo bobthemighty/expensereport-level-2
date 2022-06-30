@@ -1,46 +1,4 @@
-type ExpenseType = "dinner" | "breakfast" | "car-rental"
-
-class Expense {
-  constructor(public type: ExpenseType, public amount: number) {
-  }
-
-  get name(): string {
-    switch (this.type) {
-      case "dinner":
-        return "Dinner"
-      case "breakfast":
-        return "Breakfast"
-      case "car-rental":
-        return "Car Rental"
-    }
-  }
-
-  get isOverLimits(): boolean {
-    return this.type == "dinner" && this.amount > 5000 || this.type == "breakfast" && this.amount > 1000 ? true : false
-  }
-}
-
-class Expenses implements Iterable<Expense> {
-  constructor(private items: Array<Expense>) { }
-
-  [Symbol.iterator](): Iterator<Expense> {
-    return this.items[Symbol.iterator]();
-  }
-
-  get mealExpenses() {
-    return this.items.filter(x => x.type !== "car-rental").reduce((acc, x) => acc + x.amount, 0)
-  }
-
-  get totalExpenses() {
-    return this.items.reduce((acc, x) => acc + x.amount, 0)
-  }
-}
-
-interface ExpensesWriter {
-  writeHeader(): void
-  writeItems(expenses: Expenses): void
-  writeTotal(expenses: Expenses): void
-}
+import { ExpensesReport, Expense, ExpensesWriter } from "./model"
 
 class PlaintextWriter implements ExpensesWriter {
   writeHeader() {
@@ -53,13 +11,13 @@ class PlaintextWriter implements ExpensesWriter {
     }
   }
 
-  writeTotal(expenses: Expenses) {
+  writeTotal(expenses: ExpensesReport) {
     process.stdout.write("Meal Expenses: " + expenses.mealExpenses + "\n")
     process.stdout.write("Total Expenses: " + expenses.totalExpenses + "\n")
   }
 }
 
-class HtmlWriter {
+class HtmlWriter implements ExpensesWriter {
   writeHeader() {
     process.stdout.write("<!DOCTYPE html>\n");
     process.stdout.write("<html>\n");
@@ -70,7 +28,7 @@ class HtmlWriter {
     process.stdout.write("<h1>Expense Report: " + new Date().toISOString().substr(0, 10) + "</h1>\n")
   }
 
-  writeItems(expenses: Expenses) {
+  writeItems(expenses: ExpensesReport) {
     process.stdout.write("<table>\n");
     process.stdout.write("<thead>\n");
     process.stdout.write("<tr><th scope=\"col\">Type</th><th scope=\"col\">Amount</th><th scope=\"col\">Over Limit</th></tr>\n");
@@ -85,7 +43,7 @@ class HtmlWriter {
     process.stdout.write("</table>\n");
   }
 
-  writeTotal(expenses: Expenses) {
+  writeTotal(expenses: ExpensesReport) {
     process.stdout.write("<p>Meal Expenses: " + expenses.mealExpenses + "</p>\n")
     process.stdout.write("<p>Total Expenses: " + expenses.totalExpenses + "</p>\n")
 
@@ -95,13 +53,9 @@ class HtmlWriter {
 }
 
 function printReport(htmlMode: boolean, _expenses: Expense[]) {
-  const expenses = new Expenses(_expenses);
+  const report = new ExpensesReport(_expenses);
   const writer = htmlMode ? new HtmlWriter() : new PlaintextWriter();
-
-    writer.writeHeader()
-    writer.writeItems(expenses)
-    writer.writeTotal(expenses)
-
+  report.write(writer)
 }
 
-export { printReport, Expense, ExpenseType }
+export { printReport, Expense }
